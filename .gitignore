@@ -17,5 +17,8 @@ tags
 .vagrant/
 *.log
 
+### Config files ###
+*.config
+
 gps_logs/
 dependencies/
