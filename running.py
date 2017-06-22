@@ -23,11 +23,13 @@ unix_run_time = convert_time_to_unix(run_time)
 darksky_request = urllib.request.urlopen("https://api.darksky.net/forecast/" + darksky_key + "/" + str(tcx.latitude) + "," + str(tcx.longitude) + "," + unix_run_time + "?exclude=currently,flags").read()
 
 # Decode JSON
-darksky_json = json.loads(darksky_request.decode('utf-8'))
 
-for i in darksky_json['hourly']['data']:
-    print(i['temperature'])
+def get_temperature(darksky_request):
+    darksky_json = json.loads(darksky_request.decode('utf-8'))
+    for i in darksky_json['hourly']['data']:
+        print(i['temperature'])
 
+get_temperature(darksky_request)
 
 class getWeather:
     def __init__(self, date, time):
