@@ -20,9 +20,8 @@ def convert_time_to_unix(time):
     return time_in_unix
 
 unix_run_time = convert_time_to_unix(run_time)
-darksky_request = urllib.request.urlopen("https://api.darksky.net/forecast/" + darksky_key + "/42.3601,-71.0589," + unix_run_time + "?exclude=currently,flags").read()
+darksky_request = urllib.request.urlopen("https://api.darksky.net/forecast/" + darksky_key + "/" + str(tcx.latitude) + "," + str(tcx.longitude) + "," + unix_run_time + "?exclude=currently,flags").read()
 print(darksky_request)
-
 
 class getWeather:
     def __init__(self, date, time):
