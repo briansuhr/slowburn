@@ -31,11 +31,17 @@ def get_temperatures(darksky_request):
         temperatures[weather['time']] = weather['temperature']
     return temperatures
 
-darksky_request = darksky_api_request(run_time)
-get_temperature(darksky_request)
+def temperature_at_run_time(run_time, temperatures):
+    """Get temperature at the hour of run completion."""
 
-class getWeather:
-    def __init__(self, time, latitude, longitude):
-        self.time = time
-        self.latitude = latitude
-        self.longitude = longitude
+    hours = []
+    run_time = convert_time_to_unix(run_time)
+    for time, temperature in temperatures.items():
+        hours.append(((abs(time - int(run_time))), temperature))
+
+    temperature = (min(hours, key = lambda time_delta: time_delta[0]))[1]
+    return(temperature)
+
+darksky_request = darksky_api_request(run_time)
+temperatures = get_temperatures(darksky_request)
+print(temperature_at_run_time(run_time, temperatures))
