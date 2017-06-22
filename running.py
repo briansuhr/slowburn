@@ -24,18 +24,18 @@ def darksky_api_request(run_time):
     darksky_request = urllib.request.urlopen("https://api.darksky.net/forecast/" + darksky_key + "/" + str(tcx.latitude) + "," + str(tcx.longitude) + "," + unix_run_time + "?exclude=currently,flags").read()
     return(darksky_request)
 
-def get_temperature(darksky_request):
+def get_temperatures(darksky_request):
     darksky_json = json.loads(darksky_request.decode('utf-8'))
-    for i in darksky_json['hourly']['data']:
-        print(i['temperature'])
+    temperatures = {}
+    for weather in darksky_json['hourly']['data']:
+        temperatures[weather['time']] = weather['temperature']
+    return temperatures
 
 darksky_request = darksky_api_request(run_time)
 get_temperature(darksky_request)
 
 class getWeather:
-    def __init__(self, date, time):
-        self.date = date
+    def __init__(self, time, latitude, longitude):
         self.time = time
-
-    def goodbye(self, date):
-        print("my name is " + date)
+        self.latitude = latitude
+        self.longitude = longitude
