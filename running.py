@@ -19,16 +19,17 @@ def convert_time_to_unix(time):
     time_in_unix = parsed_time.strftime('%s')
     return time_in_unix
 
-unix_run_time = convert_time_to_unix(run_time)
-darksky_request = urllib.request.urlopen("https://api.darksky.net/forecast/" + darksky_key + "/" + str(tcx.latitude) + "," + str(tcx.longitude) + "," + unix_run_time + "?exclude=currently,flags").read()
-
-# Decode JSON
+def darksky_api_request(run_time):
+    unix_run_time = convert_time_to_unix(run_time)
+    darksky_request = urllib.request.urlopen("https://api.darksky.net/forecast/" + darksky_key + "/" + str(tcx.latitude) + "," + str(tcx.longitude) + "," + unix_run_time + "?exclude=currently,flags").read()
+    return(darksky_request)
 
 def get_temperature(darksky_request):
     darksky_json = json.loads(darksky_request.decode('utf-8'))
     for i in darksky_json['hourly']['data']:
         print(i['temperature'])
 
+darksky_request = darksky_api_request(run_time)
 get_temperature(darksky_request)
 
 class getWeather:
