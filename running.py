@@ -3,8 +3,8 @@ from configparser import ConfigParser
 from datetime import datetime
 import urllib.request
 import dateutil.parser
+import json
 
-t = '1984-06-02T19:05:00.000Z'
 # Darksky weather API
 # Create config file manually
 parser = ConfigParser()
@@ -21,7 +21,13 @@ def convert_time_to_unix(time):
 
 unix_run_time = convert_time_to_unix(run_time)
 darksky_request = urllib.request.urlopen("https://api.darksky.net/forecast/" + darksky_key + "/" + str(tcx.latitude) + "," + str(tcx.longitude) + "," + unix_run_time + "?exclude=currently,flags").read()
-print(darksky_request)
+
+# Decode JSON
+darksky_json = json.loads(darksky_request.decode('utf-8'))
+
+for i in darksky_json['hourly']['data']:
+    print(i['temperature'])
+
 
 class getWeather:
     def __init__(self, date, time):
