@@ -20,34 +20,35 @@ def convert_time_to_unix(time):
     return time_in_unix
 
 
-def darksky_api_request(run_time):
-    unix_run_time = convert_time_to_unix(run_time)
-    darksky_request = urllib.request.urlopen(
-        "https://api.darksky.net/forecast/" + darksky_key + "/" + str(tcx.latitude) + "," + str(
-            tcx.longitude) + "," + unix_run_time + "?exclude=currently,flags").read()
-    return (darksky_request)
+class GetWeather:
+    def __init__(self, run_time):
+        self.run_time = run_time
+
+    def darksky_api_request(self):
+        unix_run_time = convert_time_to_unix(self.run_time)
+        darksky_request = urllib.request.urlopen(
+            "https://api.darksky.net/forecast/" + darksky_key + "/" + str(tcx.latitude) + "," + str(
+                tcx.longitude) + "," + unix_run_time + "?exclude=currently,flags").read()
+        return (darksky_request)
+
+    def all_temperatures(self):
+        darksky_json = json.loads(self.darksky_api_request().decode('utf-8'))
+        temperatures = {}
+        for weather in darksky_json['hourly']['data']:
+            temperatures[weather['time']] = weather['temperature']
+        return temperatures
+
+    def temperature(self):
+        """Get temperature at the hour of run completion."""
+
+        hours = []
+        unix_run_time = convert_time_to_unix(self.run_time)
+        for time, temperature in self.all_temperatures().items():
+            hours.append(((abs(time - int(unix_run_time))), temperature))
+
+        temperature = (min(hours, key=lambda time_delta: time_delta[0]))[1]
+        return temperature
 
 
-def get_temperatures(darksky_request):
-    darksky_json = json.loads(darksky_request.decode('utf-8'))
-    temperatures = {}
-    for weather in darksky_json['hourly']['data']:
-        temperatures[weather['time']] = weather['temperature']
-    return temperatures
-
-
-def temperature_at_run_time(run_time, temperatures):
-    """Get temperature at the hour of run completion."""
-
-    hours = []
-    run_time = convert_time_to_unix(run_time)
-    for time, temperature in temperatures.items():
-        hours.append(((abs(time - int(run_time))), temperature))
-
-    temperature = (min(hours, key=lambda time_delta: time_delta[0]))[1]
-    return temperature
-
-
-darksky_request = darksky_api_request(run_time)
-temperatures = get_temperatures(darksky_request)
-print(temperature_at_run_time(run_time, temperatures))
+Weather = GetWeather(run_time)
+Weather.temperature()
