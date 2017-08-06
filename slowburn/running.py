@@ -32,6 +32,8 @@ class GetWeather:
         return (darksky_request)
 
     def all_temperatures(self):
+        """Get all hourly temperatures for the day"""
+
         darksky_json = json.loads(self.darksky_api_request().decode('utf-8'))
         temperatures = {}
         for weather in darksky_json['hourly']['data']:
@@ -50,5 +52,5 @@ class GetWeather:
         return temperature
 
 
-Weather = GetWeather(run_time)
-Weather.temperature()
+weather = GetWeather(run_time)
+weather.temperature()
