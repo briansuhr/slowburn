@@ -3,6 +3,7 @@ import context
 
 from slowburn.running import *
 
+
 class MyTest(unittest.TestCase):
     def setUp(self):
         self.weather = GetWeather('2017-06-15T19:01:17.000Z')
@@ -19,6 +20,10 @@ class MyTest(unittest.TestCase):
                           1497510000: 65.52, 1497538800: 64.78, 1497553200: 83.76, 1497524400: 59.58, 1497567600: 91.85,
                           1497582000: 84.73, 1497556800: 86.95, 1497528000: 58.84, 1497542400: 68.9}
                          )
+
+    def test_temperature_at_run_completion(self):
+        self.assertEqual(self.weather.temperature(), 83.76)
+
 
 if __name__ == '__main__':
     unittest.main()

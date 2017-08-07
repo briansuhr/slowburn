@@ -11,6 +11,7 @@ darksky_key = parser.get('darksky', 'key')
 tcx = tcxparser.TCXParser('../gps_logs/2017-06-15_Running.tcx')
 run_time = tcx.completed_at
 
+
 def convert_time_to_unix(time):
     parsed_time = dateutil.parser.parse(time)
     time_in_unix = parsed_time.strftime('%s')
@@ -50,10 +51,7 @@ class GetWeather:
 
 
 if __name__ == '__main__':
-    # Darksky weather API
-    # Create config file manually
-
 
     weather = GetWeather(run_time)
     print(run_time)
-    print(weather.all_temperatures())
+    print(weather.temperature())
