@@ -4,6 +4,12 @@ import urllib.request
 import dateutil.parser
 import json
 
+parser = ConfigParser()
+parser.read('../slowburn.config', encoding='utf-8')
+darksky_key = parser.get('darksky', 'key')
+
+tcx = tcxparser.TCXParser('../gps_logs/2017-06-15_Running.tcx')
+run_time = tcx.completed_at
 
 def convert_time_to_unix(time):
     parsed_time = dateutil.parser.parse(time)
@@ -46,12 +52,8 @@ class GetWeather:
 if __name__ == '__main__':
     # Darksky weather API
     # Create config file manually
-    parser = ConfigParser()
-    parser.read('slowburn.config', encoding='utf-8')
-    darksky_key = parser.get('darksky', 'key')
 
-    tcx = tcxparser.TCXParser('../gps_logs/2017-06-15_Running.tcx')
-    run_time = tcx.completed_at
 
     weather = GetWeather(run_time)
-    print(weather.temperature())
+    print(run_time)
+    print(weather.all_temperatures())
