@@ -1,16 +1,12 @@
 import unittest
 import context
 
-from slowburn.running import GetWeather
+from slowburn.running import convert_time_to_unix
 
 
 class MyTest(unittest.TestCase):
-    def setUp(self):
-        self.chart_group = []
-
-    def test_sample_test(self):
-        self.assertEqual(sample_test(1,2), 3)
-        self.assertEqual(sample_test(1,4), 5)
+    def test_convert_time_to_unix(self):
+        self.assertEqual(convert_time_to_unix("2017-06-15T19:01:17.000Z"), '1497553277')
 
 
 if __name__ == '__main__':
