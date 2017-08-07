@@ -17,24 +17,26 @@ def convert_time_to_unix(time):
     time_in_unix = parsed_time.strftime('%s')
     return time_in_unix
 
+def darksky_api_request(run_time):
+    unix_run_time = convert_time_to_unix(run_time)
+    darksky_request = urllib.request.urlopen(
+        "https://api.darksky.net/forecast/" + darksky_key + "/" + str(tcx.latitude) + "," + str(
+            tcx.longitude) + "," + unix_run_time + "?exclude=currently,flags").read()
+    return json.loads(darksky_request.decode('utf-8'))
+
 
 class GetWeather:
     def __init__(self, run_time):
         self.run_time = run_time
 
-    def darksky_api_request(self):
-        unix_run_time = convert_time_to_unix(self.run_time)
-        darksky_request = urllib.request.urlopen(
-            "https://api.darksky.net/forecast/" + darksky_key + "/" + str(tcx.latitude) + "," + str(
-                tcx.longitude) + "," + unix_run_time + "?exclude=currently,flags").read()
-        return (darksky_request)
+        print("Calling Darksky API...")
+        self.darksky_json = darksky_api_request(run_time)
 
     def all_temperatures(self):
         """Get all hourly temperatures for the day"""
 
-        darksky_json = json.loads(self.darksky_api_request().decode('utf-8'))
         temperatures = {}
-        for weather in darksky_json['hourly']['data']:
+        for weather in self.darksky_json['hourly']['data']:
             temperatures[weather['time']] = weather['temperature']
         return temperatures
 
@@ -53,5 +55,5 @@ class GetWeather:
 if __name__ == '__main__':
 
     weather = GetWeather(run_time)
-    print(run_time)
+    print(weather.all_temperatures())
     print(weather.temperature())

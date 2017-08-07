@@ -5,14 +5,25 @@ from slowburn.running import *
 
 
 class MyTest(unittest.TestCase):
+
+    # Limit API calls by using setUP only once
+    class_is_set_up = False
+
     def setUp(self):
-        self.weather = GetWeather('2017-06-15T19:01:17.000Z')
+        if not self.class_is_set_up:
+            print("Initializing Darksky API call...")
+            self.setupClass()
+            self.__class__.class_is_set_up = True
+
+    def setupClass(self):
+        unittest.TestCase.setUp(self)
+        self.__class__.weather = GetWeather('2017-06-15T19:01:17.000Z')
 
     def test_convert_time_to_unix(self):
         self.assertEqual(convert_time_to_unix("2017-06-15T19:01:17.000Z"), '1497553277')
         self.assertEqual(convert_time_to_unix("2012-04-01T04:59:22.000Z"), '1333256362')
 
-    def test_get_all_hourly_temperatures_of_day(self):
+    def test_all_temperatures_returns_all_temperatures(self):
         self.assertEqual(self.weather.all_temperatures(),
                          {1497513600: 63.97, 1497571200: 92.05, 1497585600: 79.66, 1497531600: 58.57, 1497546000: 74.09,
                           1497517200: 62.94, 1497560400: 89.52, 1497574800: 91.72, 1497589200: 75.92, 1497520800: 61.24,
