@@ -40,6 +40,12 @@ class GetWeather:
             temperatures[weather['time']] = weather['temperature']
         return temperatures
 
+    def all_humidity_levels(self):
+        humidity = {}
+        for humidity_level in self.darksky_json['hourly']['data']:
+            humidity[humidity_level['time']] = humidity_level['humidity']
+        return humidity
+
     def temperature(self):
         """Get temperature at the hour of run completion."""
 
@@ -57,3 +63,4 @@ if __name__ == '__main__':
     weather = GetWeather(run_time)
     print(weather.all_temperatures())
     print(weather.temperature())
+    print(weather.all_humidity_levels())
