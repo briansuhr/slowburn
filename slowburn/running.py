@@ -17,6 +17,7 @@ def convert_time_to_unix(time):
     time_in_unix = parsed_time.strftime('%s')
     return time_in_unix
 
+
 def darksky_api_request(run_time):
     unix_run_time = convert_time_to_unix(run_time)
     darksky_request = urllib.request.urlopen(
@@ -32,20 +33,6 @@ class GetWeather:
         print("Calling Darksky API...")
         self.darksky_json = darksky_api_request(run_time)
 
-    def all_temperatures(self):
-        """Get all hourly temperatures for the day"""
-
-        temperatures = {}
-        for weather in self.darksky_json['hourly']['data']:
-            temperatures[weather['time']] = weather['temperature']
-        return temperatures
-
-    def all_humidity_levels(self):
-        humidity = {}
-        for humidity_level in self.darksky_json['hourly']['data']:
-            humidity[humidity_level['time']] = humidity_level['humidity']
-        return humidity
-
     def get_data_point_object(self, weather_property):
 
         data_points = {}
@@ -58,7 +45,7 @@ class GetWeather:
 
         hours = []
         unix_run_time = convert_time_to_unix(self.run_time)
-        for time, temperature in self.all_temperatures().items():
+        for time, temperature in self.get_data_point_object('temperature').items():
             hours.append(((abs(time - int(unix_run_time))), temperature))
 
         temperature = (min(hours, key=lambda time_delta: time_delta[0]))[1]
@@ -66,8 +53,7 @@ class GetWeather:
 
 
 if __name__ == '__main__':
-
     weather = GetWeather(run_time)
-    print(weather.all_temperatures())
-    print(weather.temperature())
+    print(weather.get_data_point_object('temperature'))
     print(weather.get_data_point_object('humidity'))
+    print(weather.temperature())
