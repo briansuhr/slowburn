@@ -34,6 +34,8 @@ class GetWeather:
         self.darksky_json = darksky_api_request(run_time)
 
     def get_data_point_object(self, weather_property):
+        """Get weather phenomenon data point objects (like temperature, humidity, windSpeed) for each of the 24 hours
+        in the day. See https://darksky.net/dev/docs/response for list of available properties."""
 
         data_points = {}
         for data_point in self.darksky_json['hourly']['data']:
