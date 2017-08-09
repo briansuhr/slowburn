@@ -3,13 +3,23 @@ from configparser import ConfigParser
 import urllib.request
 import dateutil.parser
 import json
+import os
 
 parser = ConfigParser()
 parser.read('../slowburn.config', encoding='utf-8')
 darksky_key = parser.get('darksky', 'key')
 
-tcx = tcxparser.TCXParser('../gps_logs/2017-06-15_Running.tcx')
-run_time = tcx.completed_at
+gps_logs_directory = '../gps_logs/'
+
+
+def read_all_gps_files(gps_logs_directory):
+    all_gps_files = os.listdir(gps_logs_directory)
+    for gps_file in all_gps_files:
+        weather = GetWeather(gps_logs_directory + gps_file)
+        print(weather.weather_type('icon'))
+        print(weather.weather_type('temperature'))
+        print(weather.weather_type('humidity'))
+        print(weather.weather_type('windSpeed'))
 
 
 def convert_time_to_unix(time):
@@ -18,20 +28,20 @@ def convert_time_to_unix(time):
     return time_in_unix
 
 
-def darksky_api_request(run_time):
-    unix_run_time = convert_time_to_unix(run_time)
-    darksky_request = urllib.request.urlopen(
-        "https://api.darksky.net/forecast/" + darksky_key + "/" + str(tcx.latitude) + "," + str(
-            tcx.longitude) + "," + unix_run_time + "?exclude=currently,flags").read()
-    return json.loads(darksky_request.decode('utf-8'))
-
-
 class GetWeather:
-    def __init__(self, run_time):
-        self.run_time = run_time
+    def __init__(self, gps_file):
+        self.gps_file = gps_file
+        self.tcx = tcxparser.TCXParser(gps_logs_directory + gps_file)
+        self.run_time = self.tcx.completed_at
 
         print("Calling Darksky API...")
-        self.darksky_json = darksky_api_request(run_time)
+        self.darksky_json = self.darksky_api_request(self.run_time)
+
+    def darksky_api_request(self, run_time):
+        darksky_request = urllib.request.urlopen(
+            "https://api.darksky.net/forecast/" + darksky_key + "/" + str(self.tcx.latitude) + "," + str(
+                self.tcx.longitude) + "," + convert_time_to_unix(self.run_time) + "?exclude=currently,flags").read()
+        return json.loads(darksky_request.decode('utf-8'))
 
     def filter_weather_type(self, weather_type):
         """Get weather phenomenon data point objects (like temperature, humidity, windSpeed) for each of the 24 hours
@@ -56,9 +66,5 @@ class GetWeather:
 
 
 if __name__ == '__main__':
-    weather = GetWeather(run_time)
-    print(weather.weather_type('icon'))
-    print(weather.weather_type('temperature'))
-    print(weather.weather_type('humidity'))
-    print(weather.weather_type('windSpeed'))
+    read_all_gps_files(gps_logs_directory)
 
