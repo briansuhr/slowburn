@@ -5,7 +5,6 @@ from slowburn.running import *
 
 
 class MyTest(unittest.TestCase):
-
     # Limit API calls by using setUP only once
     class_is_set_up = False
 
@@ -32,8 +31,11 @@ class MyTest(unittest.TestCase):
                           1497582000: 84.73, 1497556800: 86.95, 1497528000: 58.84, 1497542400: 68.9}
                          )
 
-    def test_temperature_at_run_completion(self):
+    def test_weather_type_at_run_completion(self):
+        self.assertEqual(self.weather.weather_type('icon'), 'clear-day')
         self.assertEqual(self.weather.weather_type('temperature'), 83.76)
+        self.assertEqual(self.weather.weather_type('humidity'), 0.32)
+        self.assertEqual(self.weather.weather_type('windSpeed'), 5.48)
 
 
 if __name__ == '__main__':

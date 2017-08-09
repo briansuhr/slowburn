@@ -43,7 +43,7 @@ class GetWeather:
         return data_points
 
     def weather_type(self, weather_type):
-        """Get temperature at the hour of run completion."""
+        """Get weather type at the hour of run completion."""
 
         hours = []
         unix_run_time = convert_time_to_unix(self.run_time)
@@ -57,6 +57,8 @@ class GetWeather:
 
 if __name__ == '__main__':
     weather = GetWeather(run_time)
-    print(weather.filter_weather_type('temperature'))
-    print(weather.filter_weather_type('humidity'))
+    print(weather.weather_type('icon'))
     print(weather.weather_type('temperature'))
+    print(weather.weather_type('humidity'))
+    print(weather.weather_type('windSpeed'))
+
