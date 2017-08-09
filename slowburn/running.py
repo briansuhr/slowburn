@@ -33,7 +33,7 @@ class GetWeather:
         print("Calling Darksky API...")
         self.darksky_json = darksky_api_request(run_time)
 
-    def get_data_point_object(self, weather_type):
+    def filter_weather_type(self, weather_type):
         """Get weather phenomenon data point objects (like temperature, humidity, windSpeed) for each of the 24 hours
         in the day. See https://darksky.net/dev/docs/response for list of available properties."""
 
@@ -47,15 +47,16 @@ class GetWeather:
 
         hours = []
         unix_run_time = convert_time_to_unix(self.run_time)
-        for time, temperature in self.get_data_point_object(weather_type).items():
+        for time, temperature in self.filter_weather_type(weather_type).items():
             hours.append(((abs(time - int(unix_run_time))), temperature))
 
+        # Filter weather type to hour nearest the run completion time.
         filtered_weather_type = (min(hours, key=lambda time_delta: time_delta[0]))[1]
         return filtered_weather_type
 
 
 if __name__ == '__main__':
     weather = GetWeather(run_time)
-    print(weather.get_data_point_object('temperature'))
-    print(weather.get_data_point_object('humidity'))
+    print(weather.filter_weather_type('temperature'))
+    print(weather.filter_weather_type('humidity'))
     print(weather.weather_type('temperature'))
