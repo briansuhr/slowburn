@@ -33,7 +33,7 @@ class MyTest(unittest.TestCase):
                          )
 
     def test_temperature_at_run_completion(self):
-        self.assertEqual(self.weather.temperature(), 83.76)
+        self.assertEqual(self.weather.weather_type('temperature'), 83.76)
 
 
 if __name__ == '__main__':
