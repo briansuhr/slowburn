@@ -16,7 +16,7 @@ class MyTest(unittest.TestCase):
 
     def setupClass(self):
         unittest.TestCase.setUp(self)
-        self.__class__.weather = GetWeather('2017-06-15T19:01:17.000Z')
+        self.__class__.weather = GetWeather('../gps_logs/2017-06-15_Running.tcx')
 
     def test_convert_time_to_unix(self):
         self.assertEqual(convert_time_to_unix("2017-06-15T19:01:17.000Z"), '1497553277')
