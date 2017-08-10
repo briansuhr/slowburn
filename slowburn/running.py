@@ -7,7 +7,6 @@ import os
 from timezonefinder import TimezoneFinder
 from datetime import datetime, timedelta
 import pytz
-from pytz import timezone
 
 parser = ConfigParser()
 parser.read('../slowburn.config', encoding='utf-8')
