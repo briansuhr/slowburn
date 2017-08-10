@@ -21,6 +21,7 @@ def read_all_gps_files(gps_logs_directory):
         print(weather.weather_type('temperature'))
         print(weather.weather_type('humidity'))
         print(weather.weather_type('windSpeed'))
+        print(weather.timezone())
 
 
 def convert_time_to_unix(time):
@@ -66,16 +67,15 @@ class GetWeather:
         filtered_weather_type = (min(hours, key=lambda time_delta: time_delta[0]))[1]
         return filtered_weather_type
 
+    def timezone(self):
+        tf = TimezoneFinder()
+        latitude = self.tcx.latitude
+        longitude = self.tcx.longitude
+
+        return tf.timezone_at(lat=latitude, lng=longitude)
+
 
 
 
 if __name__ == '__main__':
     read_all_gps_files(gps_logs_directory)
-
-    def get_timezone():
-        tf = TimezoneFinder()
-        longitude = 13.358
-        latitude = 52.5061
-        print(tf.timezone_at(lng=longitude, lat=latitude))
-
-    get_timezone()
