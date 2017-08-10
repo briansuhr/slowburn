@@ -5,12 +5,17 @@ import dateutil.parser
 import json
 import os
 from timezonefinder import TimezoneFinder
+from datetime import datetime, timedelta
+import pytz
+from pytz import timezone
 
 parser = ConfigParser()
 parser.read('../slowburn.config', encoding='utf-8')
 darksky_key = parser.get('darksky', 'key')
 
 gps_logs_directory = '../gps_logs/'
+
+tf = TimezoneFinder()
 
 
 def read_all_gps_files(gps_logs_directory):
@@ -21,7 +26,7 @@ def read_all_gps_files(gps_logs_directory):
         print(weather.weather_type('temperature'))
         print(weather.weather_type('humidity'))
         print(weather.weather_type('windSpeed'))
-        print(weather.timezone())
+        print(weather.local_time())
 
 
 def convert_time_to_unix(time):
@@ -36,14 +41,18 @@ class GetWeather:
         self.tcx = tcxparser.TCXParser(gps_logs_directory + gps_file)
         self.run_time = self.tcx.completed_at
 
+        self.latitude = self.tcx.latitude
+        self.longitude = self.tcx.longitude
+        self.run_timezone = tf.timezone_at(lat=self.latitude, lng=self.longitude)
+
         print("Calling Darksky API...")
         self.darksky_json = self.darksky_api_request(self.run_time)
 
     def darksky_api_request(self, run_time):
         print(run_time)
         darksky_request = urllib.request.urlopen(
-            "https://api.darksky.net/forecast/" + darksky_key + "/" + str(self.tcx.latitude) + "," + str(
-                self.tcx.longitude) + "," + convert_time_to_unix(self.run_time) + "?exclude=currently,flags").read()
+            "https://api.darksky.net/forecast/" + darksky_key + "/" + str(self.latitude) + "," + str(
+                self.longitude) + "," + convert_time_to_unix(self.run_time) + "?exclude=currently,flags").read()
         return json.loads(darksky_request.decode('utf-8'))
 
     def filter_weather_type(self, weather_type):
@@ -67,14 +76,14 @@ class GetWeather:
         filtered_weather_type = (min(hours, key=lambda time_delta: time_delta[0]))[1]
         return filtered_weather_type
 
-    def timezone(self):
-        tf = TimezoneFinder()
-        latitude = self.tcx.latitude
-        longitude = self.tcx.longitude
+    def local_time(self):
+        """Convert run time from stored UTC time to the local timezone at the latitude/longitude of the run."""
+        utc_time = datetime.utcfromtimestamp(float(convert_time_to_unix(self.run_time)))
+        localized_utc_time = pytz.utc.localize(utc_time)
+        local_timezone = pytz.timezone(self.run_timezone)
+        utc_to_local_time = localized_utc_time.astimezone(local_timezone)
 
-        return tf.timezone_at(lat=latitude, lng=longitude)
-
-
+        return utc_to_local_time
 
 
 if __name__ == '__main__':
