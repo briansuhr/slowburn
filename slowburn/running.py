@@ -22,10 +22,10 @@ def read_all_gps_files(gps_logs_directory):
     for gps_file in all_gps_files:
         weather = GetWeather(gps_logs_directory + gps_file)
         print(weather.weather_type('icon'))
-        print(weather.filter_weather_type('temperature'))
         print(weather.weather_type('temperature'))
         print(weather.weather_type('humidity'))
         print(weather.weather_type('windSpeed'))
+        print(weather.local_timezone())
 
 
 def convert_time_to_unix(time):
@@ -34,7 +34,7 @@ def convert_time_to_unix(time):
     return time_in_unix
 
 
-def local_time(utc_time):
+def convert_to_local_time(utc_time):
     """Convert run time from stored UTC time to the local timezone at the latitude/longitude of the run."""
     gps_utc_time = datetime.utcfromtimestamp(float(convert_time_to_unix(utc_time)))
     localized_utc_time = pytz.utc.localize(gps_utc_time)
@@ -43,7 +43,8 @@ def local_time(utc_time):
 
     return utc_to_local_time
 
-def get_timezone(latitude, longitude):
+
+def convert_to_local_timezone(latitude, longitude):
     return tf.timezone_at(lat=latitude, lng=longitude)
 
 
@@ -87,6 +88,9 @@ class GetWeather:
         # Filter weather type to hour nearest the run completion time.
         filtered_weather_type = (min(hours, key=lambda time_delta: time_delta[0]))[1]
         return filtered_weather_type
+
+    def local_timezone(self):
+        return self.darksky_json['timezone']
 
 
 
