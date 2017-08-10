@@ -37,6 +37,9 @@ class MyTest(unittest.TestCase):
         self.assertEqual(self.weather.weather_type('humidity'), 0.32)
         self.assertEqual(self.weather.weather_type('windSpeed'), 5.48)
 
+    def test_convert_to_local_time_converts_utc_to_local_timezone(self):
+        self.assertEqual(str(convert_to_local_time(self.weather.utc_run_time(), self.weather.local_timezone())), '2017-06-15 12:01:17-07:00')
+
 
 if __name__ == '__main__':
     unittest.main()
