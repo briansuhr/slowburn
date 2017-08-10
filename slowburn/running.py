@@ -4,6 +4,7 @@ import urllib.request
 import dateutil.parser
 import json
 import os
+from timezonefinder import TimezoneFinder
 
 parser = ConfigParser()
 parser.read('../slowburn.config', encoding='utf-8')
@@ -38,6 +39,7 @@ class GetWeather:
         self.darksky_json = self.darksky_api_request(self.run_time)
 
     def darksky_api_request(self, run_time):
+        print(run_time)
         darksky_request = urllib.request.urlopen(
             "https://api.darksky.net/forecast/" + darksky_key + "/" + str(self.tcx.latitude) + "," + str(
                 self.tcx.longitude) + "," + convert_time_to_unix(self.run_time) + "?exclude=currently,flags").read()
@@ -65,6 +67,15 @@ class GetWeather:
         return filtered_weather_type
 
 
+
+
 if __name__ == '__main__':
     read_all_gps_files(gps_logs_directory)
 
+    def get_timezone():
+        tf = TimezoneFinder()
+        longitude = 13.358
+        latitude = 52.5061
+        print(tf.timezone_at(lng=longitude, lat=latitude))
+
+    get_timezone()
