@@ -68,7 +68,6 @@ class GetWeather:
                 self.longitude) + "," + convert_time_to_unix(self.run_time) + "?exclude=currently,flags").read()
         return json.loads(darksky_request.decode('utf-8'))
 
-
     def filter_weather_type(self, weather_type):
         """Get weather phenomenon data point objects (like temperature, humidity, windSpeed) for each of the 24 hours
         in the day. See https://darksky.net/dev/docs/response for list of available properties."""
@@ -95,7 +94,6 @@ class GetWeather:
 
     def utc_run_time(self):
         return self.run_time
-
 
 
 if __name__ == '__main__':
