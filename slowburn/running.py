@@ -29,6 +29,16 @@ def write_weather_to_csv_file(gps_logs_directory):
         file_writer.writerow(['Date', 'Summary', 'Temperature', 'Humidity', 'Wind', 'Filename'])
 
         for gps_file in all_gps_files:
+
+            # Ignore any file that isn't a GPS format
+            is_gps_file = False
+
+            if ".tcx" in gps_file or "*.gpx" in gps_file:
+                is_gps_file = True
+
+            if not is_gps_file:
+                continue
+
             weather = GetWeather(gps_logs_directory + gps_file)
             date = convert_to_local_time(weather.utc_run_time(), weather.local_timezone())
 
@@ -65,7 +75,7 @@ class GetWeather:
         self.latitude = self.tcx.latitude
         self.longitude = self.tcx.longitude
 
-        print("Calling Darksky API...")
+        print("Getting Darksky weather for " + str(gps_file) + " ...")
         self.darksky_json = self.darksky_api_request(self.run_time)
 
     def darksky_api_request(self, run_time):
