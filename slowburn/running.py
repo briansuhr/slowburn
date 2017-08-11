@@ -21,15 +21,19 @@ tf = TimezoneFinder()
 def write_weather_to_csv_file(gps_logs_directory):
     all_gps_files = os.listdir(gps_logs_directory)
 
-    for gps_file in all_gps_files:
-        weather = GetWeather(gps_logs_directory + gps_file)
-        date = convert_to_local_time(weather.utc_run_time(), weather.local_timezone())
+    with open('running.csv', 'w') as csv_file:
 
-        with open('running.csv', 'w') as csv_file:
-            file_writer = csv.writer(csv_file, delimiter=',',
-                                     quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        file_writer = csv.writer(csv_file, delimiter=',',
+                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
+
+        file_writer.writerow(['Date', 'Summary', 'Temperature', 'Humidity', 'Wind', 'Filename'])
+
+        for gps_file in all_gps_files:
+            weather = GetWeather(gps_logs_directory + gps_file)
+            date = convert_to_local_time(weather.utc_run_time(), weather.local_timezone())
+
             file_writer.writerow([date, weather.weather_type('icon'), weather.weather_type('temperature'),
-                                 weather.weather_type('humidity'), weather.weather_type('windSpeed')])
+                                 weather.weather_type('humidity'), weather.weather_type('windSpeed'), gps_file])
 
 
 def convert_time_to_unix(time):
