@@ -7,6 +7,7 @@ import os
 from timezonefinder import TimezoneFinder
 from datetime import datetime, timedelta
 import pytz
+import csv
 
 parser = ConfigParser()
 parser.read('../slowburn.config', encoding='utf-8')
@@ -17,16 +18,18 @@ gps_logs_directory = '../gps_logs/'
 tf = TimezoneFinder()
 
 
-def read_all_gps_files(gps_logs_directory):
+def write_weather_to_csv_file(gps_logs_directory):
     all_gps_files = os.listdir(gps_logs_directory)
+
     for gps_file in all_gps_files:
         weather = GetWeather(gps_logs_directory + gps_file)
-        print(weather.weather_type('icon'))
-        print(weather.weather_type('temperature'))
-        print(weather.weather_type('humidity'))
-        print(weather.weather_type('windSpeed'))
-        print(weather.local_timezone())
-        print(convert_to_local_time(weather.utc_run_time(), weather.local_timezone()))
+        date = convert_to_local_time(weather.utc_run_time(), weather.local_timezone())
+
+        with open('running.csv', 'w') as csv_file:
+            file_writer = csv.writer(csv_file, delimiter=',',
+                                     quotechar='|', quoting=csv.QUOTE_MINIMAL)
+            file_writer.writerow([date, weather.weather_type('icon'), weather.weather_type('temperature'),
+                                 weather.weather_type('humidity'), weather.weather_type('windSpeed')])
 
 
 def convert_time_to_unix(time):
@@ -97,4 +100,4 @@ class GetWeather:
 
 
 if __name__ == '__main__':
-    read_all_gps_files(gps_logs_directory)
+    write_weather_to_csv_file(gps_logs_directory)
