@@ -70,13 +70,15 @@ def convert_to_local_timezone(latitude, longitude):
 
 class ReadGPS:
 
-    def read_csv(self):
+    def __init__(self):
+        self.data = ET.parse('../gps_logs/2017-06-15_Running.tcx')
+        self.root = self.data.getroot()
 
-        data = ET.parse('../gps_logs/2017-06-15_Running.tcx')
-        root = data.getroot()
-        for element in root.iter():
-            print("Tag: " + element.tag + " Text: " + element.text)
-            print("Element: ", element.attrib)
+    def start_time(self):
+
+        for element in self.root.iter():
+            if "}Id" in element.tag:
+                return element.text
 
 
 class GetWeather:
@@ -127,5 +129,5 @@ class GetWeather:
 
 
 if __name__ == '__main__':
-    puddy = ReadGPS()
-    print(puddy.read_csv())
+    gps = ReadGPS()
+    print(gps.start_time())
