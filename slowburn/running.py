@@ -18,8 +18,8 @@ gps_logs_directory = '../gps_logs/'
 tf = TimezoneFinder()
 
 
-def write_weather_to_csv_file(gps_logs_directory):
-    all_gps_files = os.listdir(gps_logs_directory)
+def write_weather_to_csv_file(logs_directory):
+    all_gps_files = os.listdir(logs_directory)
 
     with open('running.csv', 'w') as csv_file:
 
@@ -39,7 +39,7 @@ def write_weather_to_csv_file(gps_logs_directory):
             if not is_gps_file:
                 continue
 
-            weather = GetWeather(gps_logs_directory + gps_file)
+            weather = GetWeather(logs_directory + gps_file)
             date = convert_to_local_time(weather.utc_run_time(), weather.local_timezone())
 
             file_writer.writerow([date, weather.weather_type('icon'), weather.weather_type('temperature'),
