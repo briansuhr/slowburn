@@ -8,6 +8,8 @@ from timezonefinder import TimezoneFinder
 from datetime import datetime, timedelta
 import pytz
 import csv
+import xml.etree.ElementTree as ET
+
 
 parser = ConfigParser()
 parser.read('../slowburn.config', encoding='utf-8')
@@ -66,6 +68,17 @@ def convert_to_local_timezone(latitude, longitude):
     return tf.timezone_at(lat=latitude, lng=longitude)
 
 
+class ReadGPS:
+
+    def read_csv(self):
+
+        data = ET.parse('../gps_logs/2017-06-15_Running.tcx')
+        root = data.getroot()
+        for element in root.iter():
+            print("Tag: " + element.tag + " Text: " + element.text)
+            print("Element: ", element.attrib)
+
+
 class GetWeather:
     def __init__(self, gps_file):
         self.gps_file = gps_file
@@ -114,4 +127,5 @@ class GetWeather:
 
 
 if __name__ == '__main__':
-    write_weather_to_csv_file(gps_logs_directory)
+    puddy = ReadGPS()
+    print(puddy.read_csv())
