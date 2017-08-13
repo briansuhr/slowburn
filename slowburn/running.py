@@ -68,8 +68,9 @@ def convert_to_local_timezone(latitude, longitude):
 
 
 class ReadGPS:
-    def __init__(self):
-        self.data = ET.parse('../gps_logs/2017-06-15_Running.tcx')
+    def __init__(self, gps_file):
+        self.gps_file = gps_file
+        self.data = ET.parse(gps_file)
         self.root = self.data.getroot()
 
     def start_time(self):
@@ -93,12 +94,17 @@ class ReadGPS:
             if "DistanceMeters" in element.tag:
                 return element.text
 
+    def latitude(self):
+
+        for element in self.root.iter():
+            if "LatitudeDegrees" in element.tag:
+                return element.text
+
 
 class GetWeather:
     def __init__(self, gps_file):
-        self.gps_file = gps_file
-        self.tcx = tcxparser.TCXParser(gps_logs_directory + gps_file)
-        self.run_time = self.tcx.completed_at
+        self.tcx = ReadGPS(gps_file)
+        self.run_time = self.tcx.start_time
 
         self.latitude = self.tcx.latitude
         self.longitude = self.tcx.longitude
@@ -142,7 +148,8 @@ class GetWeather:
 
 
 if __name__ == '__main__':
-    gps = ReadGPS()
+    gps = ReadGPS("../gps_logs/2017-06-15_Running.tcx")
     print(gps.start_time())
     print(gps.total_time())
     print(gps.total_distance())
+    print(gps.latitude())
