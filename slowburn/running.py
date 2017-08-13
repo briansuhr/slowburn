@@ -10,7 +10,6 @@ import pytz
 import csv
 import xml.etree.ElementTree as ET
 
-
 parser = ConfigParser()
 parser.read('../slowburn.config', encoding='utf-8')
 darksky_key = parser.get('darksky', 'key')
@@ -45,7 +44,7 @@ def write_weather_to_csv_file(logs_directory):
             date = convert_to_local_time(weather.utc_run_time(), weather.local_timezone())
 
             file_writer.writerow([date, weather.weather_type('icon'), weather.weather_type('temperature'),
-                                 weather.weather_type('humidity'), weather.weather_type('windSpeed'), gps_file])
+                                  weather.weather_type('humidity'), weather.weather_type('windSpeed'), gps_file])
 
 
 def convert_time_to_unix(time):
@@ -69,7 +68,6 @@ def convert_to_local_timezone(latitude, longitude):
 
 
 class ReadGPS:
-
     def __init__(self):
         self.data = ET.parse('../gps_logs/2017-06-15_Running.tcx')
         self.root = self.data.getroot()
@@ -85,8 +83,14 @@ class ReadGPS:
         """Returns total time of run in seconds"""
 
         for element in self.root.iter():
-
             if "TotalTimeSeconds" in element.tag:
+                return element.text
+
+    def total_distance(self):
+        """Returns total distance run in meters"""
+
+        for element in self.root.iter():
+            if "DistanceMeters" in element.tag:
                 return element.text
 
 
@@ -141,3 +145,4 @@ if __name__ == '__main__':
     gps = ReadGPS()
     print(gps.start_time())
     print(gps.total_time())
+    print(gps.total_distance())
