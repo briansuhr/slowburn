@@ -75,9 +75,18 @@ class ReadGPS:
         self.root = self.data.getroot()
 
     def start_time(self):
+        """Returns start time of run"""
 
         for element in self.root.iter():
             if "}Id" in element.tag:
+                return element.text
+
+    def total_time(self):
+        """Returns total time of run in seconds"""
+
+        for element in self.root.iter():
+
+            if "TotalTimeSeconds" in element.tag:
                 return element.text
 
 
@@ -131,3 +140,4 @@ class GetWeather:
 if __name__ == '__main__':
     gps = ReadGPS()
     print(gps.start_time())
+    print(gps.total_time())
