@@ -34,7 +34,7 @@ def write_weather_to_csv_file(logs_directory):
             # Ignore any file that isn't a GPS format
             is_gps_file = False
 
-            if ".tcx" in gps_file or "*.gpx" in gps_file:
+            if ".tcx" in gps_file or ".gpx" in gps_file:
                 is_gps_file = True
 
             if not is_gps_file:
