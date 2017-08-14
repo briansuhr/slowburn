@@ -18,7 +18,9 @@ gps_logs_directory = '../gps_logs/'
 tf = TimezoneFinder()
 
 
-def write_weather_to_csv_file(logs_directory):
+def write_runs_to_csv(logs_directory):
+    """Writes basic activity data from all GPS files in directory to a .csv file"""
+
     all_gps_files = os.listdir(logs_directory)
 
     with open('running.csv', 'w') as csv_file:
@@ -166,4 +168,4 @@ if __name__ == '__main__':
     # weather = GetWeather("../gps_logs/2017-06-15_Running.tcx")
     # print(weather.weather_type('temperature'))
 
-    write_weather_to_csv_file(gps_logs_directory)
+    write_runs_to_csv(gps_logs_directory)
