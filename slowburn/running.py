@@ -1,4 +1,3 @@
-import tcxparser
 from configparser import ConfigParser
 import urllib.request
 import dateutil.parser
