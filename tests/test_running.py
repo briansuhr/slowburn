@@ -31,15 +31,15 @@ class MyTest(unittest.TestCase):
                           1497582000: 84.73, 1497556800: 86.95, 1497528000: 58.84, 1497542400: 68.9}
                          )
 
-    def test_weather_type_at_run_completion(self):
+    def test_weather_type_at_start_of_run(self):
         self.assertEqual(self.weather.weather_type('icon'), 'clear-day')
-        self.assertEqual(self.weather.weather_type('temperature'), 83.76)
-        self.assertEqual(self.weather.weather_type('humidity'), 0.32)
-        self.assertEqual(self.weather.weather_type('windSpeed'), 5.48)
+        self.assertEqual(self.weather.weather_type('temperature'), 78.7)
+        self.assertEqual(self.weather.weather_type('humidity'), 0.37)
+        self.assertEqual(self.weather.weather_type('windSpeed'), 6.82)
 
     def test_convert_to_local_time_converts_utc_to_local_timezone(self):
         self.assertEqual(str(convert_to_local_time(self.weather.utc_run_time(), self.weather.local_timezone())),
-                         '2017-06-15 12:01:17-07:00')
+                         '2017-06-15 11:11:02-07:00')
 
 
 if __name__ == '__main__':
