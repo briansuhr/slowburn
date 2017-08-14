@@ -26,7 +26,7 @@ def write_weather_to_csv_file(logs_directory):
                                  quotechar='|', quoting=csv.QUOTE_MINIMAL)
 
         file_writer.writerow(
-            ['Date', 'Start Time', 'Total Time', 'Distance', 'Latitude', 'Longitude', 'Summary', 'Temperature',
+            ['Date', 'Total Time', 'Distance', 'Latitude', 'Longitude', 'Summary', 'Temperature',
              'Humidity', 'Wind', 'Filename'])
 
         for gps_file in all_gps_files:
@@ -45,7 +45,7 @@ def write_weather_to_csv_file(logs_directory):
             date = convert_to_local_time(weather.utc_run_time(), weather.local_timezone())
 
             file_writer.writerow(
-                [date, run_stats.start_time(), run_stats.total_time(), run_stats.total_distance(), run_stats.latitude(),
+                [date, run_stats.total_time(), run_stats.total_distance(), run_stats.latitude(),
                  run_stats.longitude(), weather.weather_type('icon'), weather.weather_type('temperature'),
                  weather.weather_type('humidity'), weather.weather_type('windSpeed'), gps_file])
 
