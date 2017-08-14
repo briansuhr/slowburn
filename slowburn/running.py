@@ -22,11 +22,12 @@ def write_weather_to_csv_file(logs_directory):
     all_gps_files = os.listdir(logs_directory)
 
     with open('running.csv', 'w') as csv_file:
-
         file_writer = csv.writer(csv_file, delimiter=',',
                                  quotechar='|', quoting=csv.QUOTE_MINIMAL)
 
-        file_writer.writerow(['Date', 'Summary', 'Temperature', 'Humidity', 'Wind', 'Filename'])
+        file_writer.writerow(
+            ['Date', 'Start Time', 'Total Time', 'Distance', 'Latitude', 'Longitude', 'Summary', 'Temperature',
+             'Humidity', 'Wind', 'Filename'])
 
         for gps_file in all_gps_files:
 
@@ -39,11 +40,14 @@ def write_weather_to_csv_file(logs_directory):
             if not is_gps_file:
                 continue
 
+            run_stats = ReadGPS(logs_directory + gps_file)
             weather = GetWeather(logs_directory + gps_file)
             date = convert_to_local_time(weather.utc_run_time(), weather.local_timezone())
 
-            file_writer.writerow([date, weather.weather_type('icon'), weather.weather_type('temperature'),
-                                  weather.weather_type('humidity'), weather.weather_type('windSpeed'), gps_file])
+            file_writer.writerow(
+                [date, run_stats.start_time(), run_stats.total_time(), run_stats.total_distance(), run_stats.latitude(),
+                 run_stats.longitude(), weather.weather_type('icon'), weather.weather_type('temperature'),
+                 weather.weather_type('humidity'), weather.weather_type('windSpeed'), gps_file])
 
 
 def convert_time_to_unix(time):
@@ -105,6 +109,7 @@ class ReadGPS:
             if "LongitudeDegrees" in element.tag:
                 return element.text
 
+
 class GetWeather:
     def __init__(self, gps_file):
         self.gps = ReadGPS(gps_file)
@@ -151,12 +156,14 @@ class GetWeather:
 
 
 if __name__ == '__main__':
-    gps = ReadGPS("../gps_logs/2017-06-15_Running.tcx")
-    print(gps.start_time())
-    print(gps.total_time())
-    print(gps.total_distance())
-    print(gps.latitude())
-    print(gps.longitude())
+    # gps = ReadGPS("../gps_logs/2017-06-15_Running.tcx")
+    # print(gps.start_time())
+    # print(gps.total_time())
+    # print(gps.total_distance())
+    # print(gps.latitude())
+    # print(gps.longitude())
+    #
+    # weather = GetWeather("../gps_logs/2017-06-15_Running.tcx")
+    # print(weather.weather_type('temperature'))
 
-    weather = GetWeather("../gps_logs/2017-06-15_Running.tcx")
-    print(weather.weather_type('temperature'))
+    write_weather_to_csv_file(gps_logs_directory)
