@@ -100,20 +100,24 @@ class ReadGPS:
             if "LatitudeDegrees" in element.tag:
                 return element.text
 
+    def longitude(self):
+
+        for element in self.root.iter():
+            if "LongitudeDegrees" in element.tag:
+                return element.text
 
 class GetWeather:
     def __init__(self, gps_file):
-        self.tcx = ReadGPS(gps_file)
-        self.run_time = self.tcx.start_time
+        self.gps = ReadGPS(gps_file)
+        self.run_time = self.gps.start_time()
 
-        self.latitude = self.tcx.latitude
-        self.longitude = self.tcx.longitude
+        self.latitude = self.gps.latitude()
+        self.longitude = self.gps.longitude()
 
         print("Getting Darksky weather for " + str(gps_file) + " ...")
         self.darksky_json = self.darksky_api_request(self.run_time)
 
     def darksky_api_request(self, run_time):
-        print(run_time)
         darksky_request = urllib.request.urlopen(
             "https://api.darksky.net/forecast/" + darksky_key + "/" + str(self.latitude) + "," + str(
                 self.longitude) + "," + convert_time_to_unix(self.run_time) + "?exclude=currently,flags").read()
@@ -153,3 +157,7 @@ if __name__ == '__main__':
     print(gps.total_time())
     print(gps.total_distance())
     print(gps.latitude())
+    print(gps.longitude())
+
+    weather = GetWeather("../gps_logs/2017-06-15_Running.tcx")
+    print(weather.weather_type('temperature'))
