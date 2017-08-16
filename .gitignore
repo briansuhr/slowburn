@@ -27,3 +27,4 @@ tags
 gps_logs/
 dependencies/
 *.csv
+*.db
