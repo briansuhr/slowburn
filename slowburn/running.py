@@ -120,7 +120,7 @@ class ReadGPS:
                 return element.text
 
     def total_time(self):
-        """Returns total time of run in seconds"""
+        """Returns total time of run in seconds. Sums multiple TotalTimeSeconds elements when they exist in file."""
 
         total_time = 0
 
@@ -132,7 +132,7 @@ class ReadGPS:
         return total_time
 
     def total_distance(self):
-        """Returns total distance run in meters"""
+        """Returns total distance of run in meters"""
 
         for element in self.root.iter():
             if "DistanceMeters" in element.tag:
