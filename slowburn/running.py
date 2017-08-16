@@ -122,11 +122,12 @@ class ReadGPS:
     def total_time(self):
         """Returns total time of run in seconds"""
 
-        total_time = 0.0
+        total_time = 0
 
         for element in self.root.iter():
             if "TotalTimeSeconds" in element.tag:
-                total_time += float(element.text)
+                # Convert float to integer since millisecond precision is unnecessary.
+                total_time += int(float(element.text))
 
         return total_time
 
