@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 import pytz
 import csv
 import xml.etree.ElementTree as ET
+import sqlite3
 
 parser = ConfigParser()
 parser.read('../slowburn.config', encoding='utf-8')
@@ -50,6 +51,39 @@ def write_runs_to_csv(logs_directory):
                 [date, run_stats.total_time(), run_stats.total_distance(), run_stats.latitude(),
                  run_stats.longitude(), weather.weather_type('icon'), weather.weather_type('temperature'),
                  weather.weather_type('humidity'), weather.weather_type('windSpeed'), gps_file])
+
+
+def write_run_to_database(gps_file):
+    conn = sqlite3.connect('slowburn.db')
+    c = conn.cursor()
+
+    run_stats = ReadGPS(gps_logs_directory + gps_file)
+    weather = GetWeather(gps_logs_directory + gps_file)
+    date = convert_to_local_time(weather.utc_run_time(), weather.local_timezone())
+
+    total_time = run_stats.total_time()
+    total_distance = run_stats.total_distance()
+    latitude = run_stats.latitude()
+    longitude = run_stats.longitude()
+    summary = weather.weather_type('icon')
+    temperature = weather.weather_type('temperature')
+    humidity = weather.weather_type('humidity')
+    wind = weather.weather_type('windSpeed')
+
+    def create_table():
+        c.execute(
+            "CREATE TABLE IF NOT EXISTS Running (RunID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, Date TEXT, TotalTime INTEGER, Distance INTEGER, Latitude REAL, Longitude REAL, Summary TEXT, Temperature REAL, Humidity INTEGER, Wind REAL, Filename TEXT)")
+
+    def data_entry():
+        c.execute(
+            "INSERT INTO Running (Date, TotalTime, Distance, Latitude, Longitude, Summary, Temperature, Humidity, Wind, Filename) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (date, total_time, total_distance, latitude, longitude, summary, temperature, humidity, wind, gps_file))
+        conn.commit()
+        c.close()
+        conn.close()
+
+    create_table()
+    data_entry()
 
 
 def convert_time_to_unix(time):
@@ -168,4 +202,7 @@ if __name__ == '__main__':
     # weather = GetWeather("../gps_logs/2017-06-15_Running.tcx")
     # print(weather.weather_type('temperature'))
 
-    write_runs_to_csv(gps_logs_directory)
+    all_gps_files = os.listdir(gps_logs_directory)
+
+    for gps_file in all_gps_files:
+        write_run_to_database(gps_file)
