@@ -135,9 +135,8 @@ class ReadGPS:
     def total_distance(self):
         """Returns total distance of run in meters"""
 
-        for element in self.root.iter():
-            if "DistanceMeters" in element.tag:
-                return element.text
+        for node in self.data.findall('.//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2}DistanceMeters'):
+            return node.text
 
     def latitude(self):
 
@@ -210,7 +209,7 @@ if __name__ == '__main__':
     # print(gps.total_distance())
     # print(gps.latitude())
     # print(gps.longitude())
-    gps.trackpoints()
+    print(gps.total_distance())
     #
     # weather = GetWeather("../gps_logs/2017-06-15_Running.tcx")
     # print(weather.weather_type('temperature'))
