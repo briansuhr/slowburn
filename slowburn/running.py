@@ -125,10 +125,8 @@ class ReadGPS:
 
         total_time = 0
 
-        for element in self.root.iter():
-            if "TotalTimeSeconds" in element.tag:
-                # Convert float to integer since millisecond precision is unnecessary.
-                total_time += int(float(element.text))
+        for node in self.data.findall('.//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2}TotalTimeSeconds'):
+                total_time += int(float(node.text))
 
         return total_time
 
@@ -209,7 +207,7 @@ if __name__ == '__main__':
     # print(gps.total_distance())
     # print(gps.latitude())
     # print(gps.longitude())
-    print(gps.total_distance())
+    print(gps.total_time())
     #
     # weather = GetWeather("../gps_logs/2017-06-15_Running.tcx")
     # print(weather.weather_type('temperature'))
