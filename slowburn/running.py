@@ -9,6 +9,7 @@ import pytz
 import csv
 import xml.etree.ElementTree as ET
 import sqlite3
+import gpxpy.geo
 
 parser = ConfigParser()
 parser.read('../slowburn.config', encoding='utf-8')
@@ -150,6 +151,12 @@ class ReadGPS:
             if "LongitudeDegrees" in element.tag:
                 return element.text
 
+    def all_trackpoint_times(self):
+        """Get all trackpoints in TCX file"""
+        for node in self.data.findall('.//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2}Time'):
+            print(node.text)
+
+
 
 class GetWeather:
     def __init__(self, gps_file):
@@ -197,17 +204,19 @@ class GetWeather:
 
 
 if __name__ == '__main__':
-    # gps = ReadGPS("../gps_logs/2017-06-15_Running.tcx")
+    gps = ReadGPS("../gps_logs/2017-06-15_Running.tcx")
     # print(gps.start_time())
     # print(gps.total_time())
     # print(gps.total_distance())
     # print(gps.latitude())
     # print(gps.longitude())
+    gps.trackpoints()
     #
     # weather = GetWeather("../gps_logs/2017-06-15_Running.tcx")
     # print(weather.weather_type('temperature'))
 
-    all_gps_files = os.listdir(gps_logs_directory)
+    #all_gps_files = os.listdir(gps_logs_directory)
 
-    for gps_file in all_gps_files:
-        write_run_to_database(gps_file)
+    #for gps_file in all_gps_files:
+    #    write_run_to_database(gps_file)
+    # Point one
