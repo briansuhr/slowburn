@@ -10,6 +10,7 @@ import csv
 import xml.etree.ElementTree as ET
 import sqlite3
 import gpxpy.geo
+from math import radians, sin, cos, sqrt, asin
 
 parser = ConfigParser()
 parser.read('../slowburn.config', encoding='utf-8')
@@ -174,6 +175,20 @@ class ReadGPS:
 
         return longitudes
 
+    def haversine(self, latitude1, longitude1, latitude2, longitude2):
+
+        R = 6372.8 # Radius of earth in kilometers
+
+        dLat = radians(latitude2 - latitude1)
+        dLon = radians(longitude2 - longitude1)
+        lat1 = radians(latitude1)
+        lat2 = radians(latitude2)
+
+        a = sin(dLat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dLon / 2) ** 2
+        c = 2 * asin(sqrt(a))
+
+        return R * c
+
 
 
 class GetWeather:
@@ -228,7 +243,6 @@ if __name__ == '__main__':
     # print(gps.total_distance())
     # print(gps.latitude())
     # print(gps.longitude())
-    print(gps.all_longitudes())
     #
     # weather = GetWeather("../gps_logs/2017-06-15_Running.tcx")
     # print(weather.weather_type('temperature'))
