@@ -156,11 +156,23 @@ class ReadGPS:
 
         return times
 
-    def all_tracks(self):
+    def all_latitudes(self):
 
-        for node in self.data.findall('.//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2}Time'):
-            return node.text
+        latitudes = []
 
+        for node in self.data.findall('.//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2}LatitudeDegrees'):
+            latitudes.append(node.text)
+
+        return latitudes
+
+    def all_longitudes(self):
+
+        longitudes = []
+
+        for node in self.data.findall('.//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2}LongitudeDegrees'):
+            longitudes.append(node.text)
+
+        return longitudes
 
 
 
@@ -216,7 +228,7 @@ if __name__ == '__main__':
     # print(gps.total_distance())
     # print(gps.latitude())
     # print(gps.longitude())
-    print(gps.all_trackpoint_times())
+    print(gps.all_longitudes())
     #
     # weather = GetWeather("../gps_logs/2017-06-15_Running.tcx")
     # print(weather.weather_type('temperature'))
