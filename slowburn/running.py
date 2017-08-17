@@ -150,8 +150,17 @@ class ReadGPS:
 
     def all_trackpoint_times(self):
         """Get all trackpoints in TCX file"""
+        times = []
         for node in self.data.findall('.//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2}Time'):
-            print(node.text)
+            times.append(node.text)
+
+        return times
+
+    def all_tracks(self):
+
+        for node in self.data.findall('.//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2}Time'):
+            return node.text
+
 
 
 
@@ -207,7 +216,7 @@ if __name__ == '__main__':
     # print(gps.total_distance())
     # print(gps.latitude())
     # print(gps.longitude())
-    print(gps.total_time())
+    print(gps.all_trackpoint_times())
     #
     # weather = GetWeather("../gps_logs/2017-06-15_Running.tcx")
     # print(weather.weather_type('temperature'))
