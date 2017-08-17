@@ -9,7 +9,6 @@ import pytz
 import csv
 import xml.etree.ElementTree as ET
 import sqlite3
-import gpxpy.geo
 from math import radians, sin, cos, sqrt, asin
 
 parser = ConfigParser()
@@ -177,17 +176,17 @@ class ReadGPS:
 
     def haversine(self, latitude1, longitude1, latitude2, longitude2):
 
-        R = 6372.8 # Radius of earth in kilometers
+        earth_radius = 6372.8 # Radius of earth in kilometers
 
-        dLat = radians(latitude2 - latitude1)
-        dLon = radians(longitude2 - longitude1)
-        lat1 = radians(latitude1)
-        lat2 = radians(latitude2)
+        latitude_difference = radians(latitude2 - latitude1)
+        longitude_difference = radians(longitude2 - longitude1)
+        latitude1_radians = radians(latitude1)
+        latitude2_radians = radians(latitude2)
 
-        a = sin(dLat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dLon / 2) ** 2
+        a = sin(latitude_difference / 2) ** 2 + cos(latitude1_radians) * cos(latitude2_radians) * sin(longitude_difference / 2) ** 2
         c = 2 * asin(sqrt(a))
 
-        return R * c
+        return earth_radius * c
 
 
 
@@ -243,10 +242,9 @@ if __name__ == '__main__':
     # print(gps.total_distance())
     # print(gps.latitude())
     # print(gps.longitude())
-    #
+    print(gps.haversine(36.12, -86.67, 33.94, -118.40))
     # weather = GetWeather("../gps_logs/2017-06-15_Running.tcx")
     # print(weather.weather_type('temperature'))
-
     #all_gps_files = os.listdir(gps_logs_directory)
 
     #for gps_file in all_gps_files:
